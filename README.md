@@ -1,2 +1,2 @@
 # phpish-git
-Port of posh-git for php
+This is a port of [posh-git](https://github.com/dahlbyk/posh-git) to PHP.

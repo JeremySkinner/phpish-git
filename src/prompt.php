@@ -200,6 +200,7 @@ class Prompt {
     $status = $this->status;
     if ($status['has_index']) {
       if ($s->showStatusWhenZero || count($status['index']['added'])) {
+        $this->log->log('Index added: ' . count($status['index']['added']));
         $indexStatusText = ' ';
         if ($no_leading_space) {
           $indexStatusText = '';

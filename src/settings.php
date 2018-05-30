@@ -41,8 +41,8 @@ class GitSettings {
     public $branchBehindAndAheadStatusSymbol = "\u{2195}"; # ↕ Up & Down arrow
     public $branchGoneColor                  = 'Cyan';
     public $branchIdenticalColor             = 'DarkCyan';
-    public $branchAheadColor                 = 'Green';
-    public $branchBehindColor                = 'Red';
+    public $branchAheadColor                 = 'DarkGreen';
+    public $branchBehindColor                = 'DarkRed';
     public $branchBehindAndAheadColor        = 'DarkYellow';
 
     public $branchBehindAndAheadDisplay = 'Full'; //Full, Compact, Minimal

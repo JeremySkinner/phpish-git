@@ -92,11 +92,12 @@ function inDotGitOrBareRepoDir($gitDir) {
   return false;
 }
 
-function getGitStatus(GitSettings $settings, $gitDir = null, $force = false) {
+function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Logger $log = null) {
   if (!$gitDir) $gitDir = getGitDirectory();
 
   $enabled = $force || $settings->enablePromptStatus;
-  $log = new Logger($settings->debug);
+
+  if (!$log) $log = new Logger($settings->debug);
 
   if ($enabled && $gitDir) {
 

@@ -14,7 +14,7 @@ $ansi_colors = [
   'DarkGray' => 90,
   'Blue' => 94,
   'Green' => 92,
-  'Cyan' => 96,
+  'Cyan' => 36,//96,
   'Red' => 91,
   'Magenta' => 95,
   'Yellow' => 93,
@@ -44,6 +44,11 @@ function color($color, $offset = 0) {
 
   if ($color !== '') {
     $code = $ansi_colors[$color] + $offset;
+
+    if ($color == 'Cyan') {
+      print "$code\n";
+    }
+
     return "{$ansi_esc}{$code}m";
   }
 

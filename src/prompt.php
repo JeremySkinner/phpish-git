@@ -8,13 +8,17 @@ class Prompt {
 
   private $output = '';
 
+  private $log;
+
   public static function create(GitSettings $settings) {
-    return new static($settings, getGitStatus($settings));
+    $log = new Logger($settings->debug);
+    return new static($settings, getGitStatus($settings, null, false, $log), $log);
   }
 
-  public function __construct(GitSettings $settings, array $status) {
+  public function __construct(GitSettings $settings, array $status, Logger $log) {
     $this->settings = $settings;
     $this->status = $status;
+    $this->log = $log;
   }
 
   public function writePrompt() {
@@ -34,7 +38,6 @@ class Prompt {
       $this->write($s->pathStatusSeparator);
     }
 
-    $this->write($s->beforeStatus);
     $this->write($s->beforeStatus);
     $this->writeBranchName(TRUE);
     $this->writeBranchStatus();
@@ -66,6 +69,8 @@ class Prompt {
       $this->write($s->pathStatusSeparator);
     }
 
+    $this->log->log('Finished creating prompt');
+
     return $this->output;
   }
 
@@ -90,20 +95,25 @@ class Prompt {
       return [];
     }
 
-    $branchStatusTextSpan = ['', $s->branchColor];
 
     if (($status['behind_by'] >= 1) && ($status['ahead_by'] >= 1)) {
       # We are both behind and ahead of remote
-      $branchStatusTextSpan = ['', $s->branchBehindAndAheadStatusSymbol];
+      $branchStatusTextSpan = $s->branchBehindAndAheadStatusSymbol;
     }
     elseif ($status['behind_by'] >= 1) {
       # We are behind remote
-      $branchStatusTextSpan = ['', $s->branchBehindStatusSymbol];
+      $branchStatusTextSpan = $s->branchBehindStatusSymbol;
     }
     elseif ($status['ahead_by'] >= 1) {
       # We are ahead of remote
-      $branchStatusTextSpan = ['', $s->branchAheadStatusSymbol];
+      $branchStatusTextSpan = $s->branchAheadStatusSymbol;
     }
+
+    if(!isset($branchStatusTextSpan)) {
+      $branchStatusTextSpan = ['', $s->branchColor];
+    }
+
+    $this->log->log('Branch color: ' . $branchStatusTextSpan[1]);
 
     return $branchStatusTextSpan;
   }
@@ -270,7 +280,8 @@ class Prompt {
         $this->write($workingStatusText, $s->workingColor);
       }
 
-      if (count($status['working']['modified'])) {
+      if (count($status['working']['unmerged'])) {
+
         $workingStatusText = ' ';
         if ($no_leading_space) {
           $workingStatusText = "";
@@ -292,6 +303,7 @@ class Prompt {
     $localStatusSymbol = $s->localDefaultStatusSymbol;
 
     if ($status['has_working']) {
+      $this->log->log('has_working: ' . $status['has_working'] );
       # We have un-staged files in the working tree
       $localStatusSymbol = $s->localWorkingStatusSymbol;
     }
@@ -344,6 +356,7 @@ class Prompt {
 
     $s = $this->settings;
 
+    $ansi = true;
 
     if (NULL == $fgColor) {
       $fgColor = $s->defaultColor; //.ForegroundColor
@@ -359,10 +372,15 @@ class Prompt {
       $object = $object[0];
     }
 
-    $fg = foreground($fgColor);
-    $bg = background(''); //@todo support bg colors
+    if ($ansi) {
+      $fg = foreground($fgColor);
+      $bg = background(''); //@todo support bg colors
 
-    $output .= $fg . $bg . $object . $ansi_esc . '0m';
+      $output .= $fg . $bg . $object . $ansi_esc . '0m';
+    }
+    else {
+      $output .= $object;
+    }
   }
 
   public function toString() {

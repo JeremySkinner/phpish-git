@@ -32,6 +32,8 @@ class Prompt {
     $this->write($s->defaultPromptPrefix, null, null, true);
 
     if (!$status || !$s) {
+      $this->write($s->defaultPromptBeforeSuffix);
+      $this->write($s->defaultPromptSuffix, $s->defaultPromptSuffixColor);  
       return $this->output;
     }
 

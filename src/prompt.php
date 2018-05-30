@@ -13,10 +13,6 @@ class Prompt {
     $this->status = $status;
   }
 
-  private function writePrompt($object, $foregroundColor = NULL, $backgroundColor = NULL, $color = NULL) {
-    $output = &$this->output;
-  }
-
   public function write() {
     $status = $this->status;
     $s = $this->settings;
@@ -54,7 +50,7 @@ class Prompt {
     $this->writeGitWorkingDirStatusSummary();
 
     if ($s->enableStashStatus && ($status['stash_count'] > 0)) {
-      $this->writeGitStatshCount();
+      $this->writeGitStashCount();
     }
 
     $this->writePrompt($s->afterStatus);
@@ -170,6 +166,197 @@ class Prompt {
       $this->writePrompt($branchStatusTextSpan);
     }
 
+  }
+
+  private function writeGitIndexStatus($no_leading_space = FALSE) {
+    $s = $this->settings;
+
+    $status = $this->status;
+    if ($status['has_index']) {
+      if ($s->showStatusWhenZero || count($status['index']['added'])) {
+        $indexStatusText = ' ';
+        if ($no_leading_space) {
+          $indexStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $indexStatusText .= $s->fileAddedText . count($status['index']['added']);
+        $this->writePrompt($indexStatusText, $s->indexColor);
+      }
+
+      if ($s->showStatusWhenZero || count($status['index']['modified'])) {
+        $indexStatusText = ' ';
+        if ($no_leading_space) {
+          $indexStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $indexStatusText .= $s->fileModifiedText . count($status['index']['modified']);
+
+        $this->writePrompt($indexStatusText, $s->indexColor);
+      }
+
+      if ($s->showStatusWhenZero || count($status['index']['deleted'])) {
+        $indexStatusText = ' ';
+        if ($no_leading_space) {
+          $indexStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $indexStatusText .= $s->fileRemovedText . count($status['index']['deleted']);
+
+        $this->writePrompt($indexStatusText, $s->indexColor);
+      }
+
+      if (count($status['index']['unmerged'])) {
+        $indexStatusText = ' ';
+        if ($no_leading_space) {
+          $indexStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $indexStatusText .= $s->fileConflictedText . count($status['index']['unmerged']);
+
+        $this->writePrompt($indexStatusText, $s->indexColor);
+      }
+    }
+
+  }
+
+  private function writeGitWorkingDirStatus($no_leading_space = FALSE) {
+    $status = $this->status;
+    $s = $this->settings;
+
+    if ($status['has_working']) {
+      if ($s->showStatusWhenZero || count($status['working']['added'])) {
+        $workingStatusText = ' ';
+        if ($no_leading_space) {
+          $workingStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $workingStatusText .= $s->fileAddedText . count($status['working']['added']);
+
+        $this->writePrompt($workingStatusText, $s->workingColor);
+      }
+
+      if ($s->showStatusWhenZero || count($status['working']['modified'])) {
+        $workingStatusText = ' ';
+        if ($no_leading_space) {
+          $workingStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $workingStatusText .= $s->fileModifiedText . count($status['working']['modified']);
+        $this->writePrompt($workingStatusText, $s->workingColor);
+      }
+
+      if ($s->showStatusWhenZero || count($status['working']['deleted'])) {
+        $workingStatusText = ' ';
+        if ($no_leading_space) {
+          $workingStatusText = '';
+          $no_leading_space = FALSE;
+        }
+
+        $workingStatusText .= $s->fileRemovedText . count($status['working']['deleted']);
+
+
+        $this->writePrompt($workingStatusText, $s->workingColor);
+      }
+
+      if (count($status['working']['modified'])) {
+        $workingStatusText = ' ';
+        if ($no_leading_space) {
+          $workingStatusText = "";
+          $no_leading_space = FALSE;
+        }
+
+        $workingStatusText .= $s->fileConflictedText . count($status['working']['unmerged']);
+        $this->writePrompt($workingStatusText, $s->workingColor);
+      }
+    }
+
+  }
+
+  private function writeGitWorkingDirStatusSummary($no_leading_space = FALSE) {
+    $s = $this->settings;
+    $status = $this->status;
+
+    # No uncommited changes
+    $localStatusSymbol = $s->localDefaultStatusSymbol;
+
+    if ($status['has_working']) {
+      # We have un-staged files in the working tree
+      $localStatusSymbol = $s->localWorkingStatusSymbol;
+    }
+    elseif ($status['has_index']) {
+      # We have staged but uncommited files
+      $localStatusSymbol = $s->localStagedStatusSymbol;
+    }
+
+    if ($localStatusSymbol[0]) {
+      $textSpan = $localStatusSymbol;
+      if (!$no_leading_space) {
+        $textSpan[0] = ' ' . $localStatusSymbol[0];
+      }
+
+      $this->writePrompt($textSpan);
+    }
+
+  }
+
+  private function writeGitStashCount() {
+    $s = $this->settings;
+    $status = $this->status;
+
+    if ($status['stash_count'] > 0) {
+      $stashText = $status['stash_count'];
+
+      $this->writePrompt($s->beforeStash);
+      $this->writePrompt($stashText);
+      $this->writePrompt($s->afterStash);
+    }
+  }
+
+  private function writePrompt($object, $foregroundColor = NULL, $backgroundColor = NULL, $color = NULL) {
+    global $ansi_esc;
+    $output = &$this->output;
+
+
+    if ($object === NULL || $object === '' || (is_array($object) && !$object[0])) {
+      return;
+    }
+
+    //    if ($PSCmdlet.ParameterSetName -eq "CellColor") {
+    //      $bgColor = $Color.BackgroundColor
+    //        $fgColor = $Color.ForegroundColor
+    //    }
+    //    else {
+    $bgColor = $backgroundColor;
+    $fgColor = $foregroundColor;
+    //    }
+
+    $s = $this->settings;
+
+
+    if (NULL == $fgColor) {
+      $fgColor = $s->defaultColor; //.ForegroundColor
+    }
+
+    //      if (null == $bgColor) {
+    //        $bgColor = $s.DefaultColor.BackgroundColor
+    //      }
+
+    if (is_array($object)) {
+      //$bgColor = $Object.BackgoundColor
+      $fgColor = $object[1];
+      $object = $object[0];
+    }
+
+    $fg = foreground($fgColor);
+    $bg = background(''); //@todo support bg colors
+
+    $output .= $fg . $bg . $object . $ansi_esc . '0m';
   }
 
 }

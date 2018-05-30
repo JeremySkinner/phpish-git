@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1c73d3f-5c75-45b3-a92b-af245bc4b30c" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/TextSpan.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utils.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/git-status.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/git-status.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/git.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/git.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/prompt.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/prompt.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/settings.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/settings.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,7 +26,7 @@
       <file leaf-file-name="git.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/git.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="307">
+            <state relative-caret-position="-23">
               <caret line="170" column="21" selection-start-line="170" selection-start-column="21" selection-end-line="170" selection-end-column="21" />
               <folding>
                 <element signature="n#getGitDirectory#0;n#!!top" />
@@ -44,8 +40,17 @@
       <file leaf-file-name="prompt.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/prompt.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="642">
-              <caret line="167" column="7" lean-forward="true" selection-start-line="167" selection-start-column="7" selection-end-line="167" selection-end-column="7" />
+            <state relative-caret-position="708">
+              <caret line="336" column="11" lean-forward="true" selection-start-line="336" selection-start-column="11" selection-end-line="336" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Utils.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Utils.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="700">
+              <caret line="46" column="33" lean-forward="true" selection-start-line="46" selection-start-column="33" selection-end-line="46" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -53,8 +58,8 @@
       <file leaf-file-name="settings.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/settings.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-282">
-              <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+            <state relative-caret-position="154">
+              <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -76,8 +81,15 @@
       <find>writeGitBranchName</find>
       <find>writeBranchName</find>
       <find>branchStatus</find>
+      <find>$s.</find>
       <find>gone</find>
+      <find>workingDirStatus</find>
+      <find>write</find>
+      <find>gitStashCo</find>
     </findStrings>
+    <replaceStrings>
+      <replace>$s-&gt;</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -88,8 +100,8 @@
         <option value="$PROJECT_DIR$/src/TextSpan.php" />
         <option value="$PROJECT_DIR$/src/settings.php" />
         <option value="$PROJECT_DIR$/src/git-status.php" />
-        <option value="$PROJECT_DIR$/src/Utils.php" />
         <option value="$PROJECT_DIR$/src/git.php" />
+        <option value="$PROJECT_DIR$/src/Utils.php" />
         <option value="$PROJECT_DIR$/src/prompt.php" />
       </list>
     </option>
@@ -134,6 +146,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value="utils&#9;FILE&#9;file://C:/Projects/phpish-git/src/Utils.php" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -160,30 +173,30 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1527677968104</updated>
-      <workItem from="1527677969506" duration="3490000" />
+      <workItem from="1527677969506" duration="8273000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3490000" />
+    <option name="totallyTimeSpent" value="8273000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="2062" height="1126" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24975026" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="right" id="Database" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24975026" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32929292" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -206,13 +219,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Utils.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/git-status.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -220,16 +226,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/settings.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-282">
-          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/git.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="307">
+        <state relative-caret-position="-23">
           <caret line="170" column="21" selection-start-line="170" selection-start-column="21" selection-end-line="170" selection-end-column="21" />
           <folding>
             <element signature="n#getGitDirectory#0;n#!!top" />
@@ -239,10 +238,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/settings.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Utils.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="700">
+          <caret line="46" column="33" lean-forward="true" selection-start-line="46" selection-start-column="33" selection-end-line="46" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/prompt.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="642">
-          <caret line="167" column="7" lean-forward="true" selection-start-line="167" selection-start-column="7" selection-end-line="167" selection-end-column="7" />
+        <state relative-caret-position="708">
+          <caret line="336" column="11" lean-forward="true" selection-start-line="336" selection-start-column="11" selection-end-line="336" selection-end-column="11" />
         </state>
       </provider>
     </entry>

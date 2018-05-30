@@ -8,12 +8,20 @@ class Prompt {
 
   private $output = '';
 
+  public static function create(GitSettings $settings) {
+    return new static($settings, getGitStatus($settings));
+  }
+
   public function __construct(GitSettings $settings, array $status) {
     $this->settings = $settings;
     $this->status = $status;
   }
 
-  public function write() {
+  public function writePrompt() {
+    print $this->getPrompt();
+  }
+
+  public function getPrompt() {
     $status = $this->status;
     $s = $this->settings;
 
@@ -21,25 +29,23 @@ class Prompt {
       return '';
     }
 
-    $sb = '';
-
     # When prompt is first (default), place the separator before the status summary
     if (!$s->defaultPromptWriteStatusFirst) {
-      $this->writePrompt($s->pathStatusSeparator);
+      $this->write($s->pathStatusSeparator);
     }
 
-    $this->writePrompt($s->beforeStatus);
-    $this->writePrompt($s->beforeStatus);
+    $this->write($s->beforeStatus);
+    $this->write($s->beforeStatus);
     $this->writeBranchName(TRUE);
     $this->writeBranchStatus();
 
 
     if ($s->enableFileStatus && $status['has_index']) {
-      $this->writePrompt($s->beforeIndex);
+      $this->write($s->beforeIndex);
       $this->writeGitIndexStatus();
 
       if ($status['has_working']) {
-        $this->writePrompt($s->delimStatus);
+        $this->write($s->delimStatus);
       }
     }
 
@@ -53,11 +59,11 @@ class Prompt {
       $this->writeGitStashCount();
     }
 
-    $this->writePrompt($s->afterStatus);
+    $this->write($s->afterStatus);
 
     # When status is first, place the separator after the status summary
     if ($s->defaultPromptWriteStatusFirst) {
-      $this->writePrompt($s->pathStatusSeparator);
+      $this->write($s->pathStatusSeparator);
     }
 
     return $this->output;
@@ -112,7 +118,7 @@ class Prompt {
       $branchNameTextSpan[0] = ' ' . $branchNameTextSpan[0];
     }
 
-    $this->writePrompt($branchNameTextSpan);
+    $this->write($branchNameTextSpan);
   }
 
   private function writeBranchStatus($no_leading_space = FALSE) {
@@ -163,7 +169,7 @@ class Prompt {
         $branchStatusTextSpan[0] = ' ' . $branchStatusTextSpan[0];
       }
 
-      $this->writePrompt($branchStatusTextSpan);
+      $this->write($branchStatusTextSpan);
     }
 
   }
@@ -181,7 +187,7 @@ class Prompt {
         }
 
         $indexStatusText .= $s->fileAddedText . count($status['index']['added']);
-        $this->writePrompt($indexStatusText, $s->indexColor);
+        $this->write($indexStatusText, $s->indexColor);
       }
 
       if ($s->showStatusWhenZero || count($status['index']['modified'])) {
@@ -193,7 +199,7 @@ class Prompt {
 
         $indexStatusText .= $s->fileModifiedText . count($status['index']['modified']);
 
-        $this->writePrompt($indexStatusText, $s->indexColor);
+        $this->write($indexStatusText, $s->indexColor);
       }
 
       if ($s->showStatusWhenZero || count($status['index']['deleted'])) {
@@ -205,7 +211,7 @@ class Prompt {
 
         $indexStatusText .= $s->fileRemovedText . count($status['index']['deleted']);
 
-        $this->writePrompt($indexStatusText, $s->indexColor);
+        $this->write($indexStatusText, $s->indexColor);
       }
 
       if (count($status['index']['unmerged'])) {
@@ -217,7 +223,7 @@ class Prompt {
 
         $indexStatusText .= $s->fileConflictedText . count($status['index']['unmerged']);
 
-        $this->writePrompt($indexStatusText, $s->indexColor);
+        $this->write($indexStatusText, $s->indexColor);
       }
     }
 
@@ -237,7 +243,7 @@ class Prompt {
 
         $workingStatusText .= $s->fileAddedText . count($status['working']['added']);
 
-        $this->writePrompt($workingStatusText, $s->workingColor);
+        $this->write($workingStatusText, $s->workingColor);
       }
 
       if ($s->showStatusWhenZero || count($status['working']['modified'])) {
@@ -248,7 +254,7 @@ class Prompt {
         }
 
         $workingStatusText .= $s->fileModifiedText . count($status['working']['modified']);
-        $this->writePrompt($workingStatusText, $s->workingColor);
+        $this->write($workingStatusText, $s->workingColor);
       }
 
       if ($s->showStatusWhenZero || count($status['working']['deleted'])) {
@@ -261,7 +267,7 @@ class Prompt {
         $workingStatusText .= $s->fileRemovedText . count($status['working']['deleted']);
 
 
-        $this->writePrompt($workingStatusText, $s->workingColor);
+        $this->write($workingStatusText, $s->workingColor);
       }
 
       if (count($status['working']['modified'])) {
@@ -272,7 +278,7 @@ class Prompt {
         }
 
         $workingStatusText .= $s->fileConflictedText . count($status['working']['unmerged']);
-        $this->writePrompt($workingStatusText, $s->workingColor);
+        $this->write($workingStatusText, $s->workingColor);
       }
     }
 
@@ -300,7 +306,7 @@ class Prompt {
         $textSpan[0] = ' ' . $localStatusSymbol[0];
       }
 
-      $this->writePrompt($textSpan);
+      $this->write($textSpan);
     }
 
   }
@@ -312,13 +318,13 @@ class Prompt {
     if ($status['stash_count'] > 0) {
       $stashText = $status['stash_count'];
 
-      $this->writePrompt($s->beforeStash);
-      $this->writePrompt($stashText);
-      $this->writePrompt($s->afterStash);
+      $this->write($s->beforeStash);
+      $this->write($stashText);
+      $this->write($s->afterStash);
     }
   }
 
-  private function writePrompt($object, $foregroundColor = NULL, $backgroundColor = NULL, $color = NULL) {
+  private function write($object, $foregroundColor = NULL, $backgroundColor = NULL, $color = NULL) {
     global $ansi_esc;
     $output = &$this->output;
 
@@ -357,6 +363,10 @@ class Prompt {
     $bg = background(''); //@todo support bg colors
 
     $output .= $fg . $bg . $object . $ansi_esc . '0m';
+  }
+
+  public function toString() {
+    return $this->output;
   }
 
 }

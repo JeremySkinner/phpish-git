@@ -7,5 +7,5 @@ require 'prompt.php';
 require 'utils.php';
 
 $settings = new GitSettings();
-$status = getGitStatus($settings);
-print_r($status);
+$prompt = Prompt::create($settings);
+$prompt->writePrompt();

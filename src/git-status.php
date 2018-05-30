@@ -6,6 +6,5 @@ require 'git.php';
 require 'prompt.php';
 
 $settings = new GitSettings();
-$git = Git::createFromWorkingDirectory($settings);
-$status = $git->getGitStatus();
+$status = getGitStatus($settings);
 print_r($status);

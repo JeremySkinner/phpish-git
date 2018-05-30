@@ -158,7 +158,7 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Log
         if(preg_match('/^## (?<branch>\S+?)(?:\.\.\.(?<upstream>\S+))?(?: \[(?:ahead (?<ahead>\d+))?(?:, )?(?:behind (?<behind>\d+))?(?<gone>gone)?\])?$/', $status_line, $matches)) {
           $log->log("Status 2: $status_line");
           $branch = $matches['branch'];
-          $upstream = $matches['upstream'];
+          $upstream = isset($matches['upstream']) ? $matches['upstream'] : '';
           $aheadBy = isset($matches['ahead']) ? (int)$matches['ahead'] : 0;
           $behindBy = isset($matches['behind']) ? (int)$matches['behind'] : 0;
           $gone = isset($matches['gone']) ? $matches['gone'] == 'gone' : false;

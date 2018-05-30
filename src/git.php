@@ -105,6 +105,7 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Log
     $branch = null;
     $aheadBy = 0;
     $behindBy = 0;
+    $upstream = '';
     $gone = false;
     $indexAdded = [];
     $indexModified = [];

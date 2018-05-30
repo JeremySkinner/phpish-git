@@ -15,7 +15,7 @@ class Prompt {
     return new static($settings, getGitStatus($settings, null, false, $log), $log);
   }
 
-  public function __construct(GitSettings $settings, array $status, Logger $log) {
+  public function __construct(GitSettings $settings, $status, Logger $log) {
     $this->settings = $settings;
     $this->status = $status;
     $this->log = $log;

@@ -2,7 +2,7 @@
 
 class GitSettings {
     public $enablePromptStatus = true;
-    public $debug = true;
+    public $debug = false;
     public $enableFileStatus = true;
 
     public $defaultColor = '';

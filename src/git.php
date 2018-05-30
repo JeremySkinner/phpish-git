@@ -1,7 +1,7 @@
 <?php
 
 function getGitDirectory() {
-  $rtn;
+  $rtn=0;
   $out=[];
 
   $dir = exec('git rev-parse --git-dir', $out, $rtn);
@@ -84,7 +84,6 @@ function getBranch($dir = null, $log = null) {
   $b = str_replace('refs/heads/', '', $b);
   return "$c$b$r";
 }
-
 
 function inDotGitOrBareRepoDir($gitDir) {
   if (strpos(getcwd(), $gitDir) === 0) {
@@ -169,7 +168,7 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false) {
       }
 
       if(!$branch) {
-        $branch = getGitBranch($gitDir, $log);
+        $branch = getBranch($gitDir, $log);
       }
 
       $log->log('Building status');

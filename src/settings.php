@@ -2,7 +2,7 @@
 
 class GitSettings {
     public $enablePromptStatus = true;
-    public $debug = true;
+    public $debug = false;
     public $enableFileStatus = true;
 
     public $defaultColor = '';
@@ -14,11 +14,11 @@ class GitSettings {
 
     public $pathStatusSeparator = ' ';
     public $beforeStatus = '[';
-    public $beforeStatusColor = 'Yellow';
+    public $beforeStatusColor = '';
     public $delimStatus = ' |';
     public $delimStatusColor = 'Yellow';
     public $afterStatus = ']';
-    public $afterStatusColor = 'Yellow';
+    public $afterStatusColor = '';
 
     public $beforeIndex      = '';
     public $beforeIndexColor = 'DarkGreen';
@@ -43,7 +43,7 @@ class GitSettings {
     public $branchIdenticalColor             = 'DarkCyan';
     public $branchAheadColor                 = 'Green';
     public $branchBehindColor                = 'Red';
-    public $branchBehindAndAheadColor        = 'Yellow';
+    public $branchBehindAndAheadColor        = 'DarkYellow';
 
     public $branchBehindAndAheadDisplay = 'Full'; //Full, Compact, Minimal
 

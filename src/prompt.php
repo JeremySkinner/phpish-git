@@ -156,7 +156,7 @@ class Prompt {
     elseif (($status['behind_by'] >= 1) && ($status['ahead_by'] >= 1)) {
       # We are both behind and ahead of remote
       if ($s->branchBehindAndAheadDisplay == 'Full') {
-        $branchStatus = "{$s->branchBehindStatusSymbol}{$s['behind_by']} {$s->branchAheadStatusSymbol}{$status['ahead_by']}";
+        $branchStatus = "{$s->branchBehindStatusSymbol}{$status['behind_by']} {$s->branchAheadStatusSymbol}{$status['ahead_by']}";
         $branchColor = $s->branchBehindAndAheadColor;
       }
       elseif ($s->branchBehindAndAheadDisplay == 'Compact') {

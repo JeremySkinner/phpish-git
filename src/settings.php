@@ -70,7 +70,7 @@ class GitSettings {
     public $defaultPromptBeforeSuffix = '';
 //    public $defaultPromptDebug        = ' [DBG]:';
 //    public $defaultPromptDebugColor   = 'Magenta';
-    public $defaultPromptSuffix       = '> ';
+    public $defaultPromptSuffix       = '$ ';
     public $defaultPromptSuffixColor = '';
 
     public $defaultPromptAbbreviateHomeDirectory = true;

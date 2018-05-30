@@ -29,8 +29,10 @@ class Prompt {
     $status = $this->status;
     $s = $this->settings;
 
+    $this->write($s->defaultPromptPrefix);
+
     if (!$status || !$s) {
-      return '';
+      return $this->output;
     }
 
     # When prompt is first (default), place the separator before the status summary
@@ -38,17 +40,17 @@ class Prompt {
       $this->write($s->pathStatusSeparator);
     }
 
-    $this->write($s->beforeStatus);
+    $this->write($s->beforeStatus, $s->beforeStatusColor);
     $this->writeBranchName(TRUE);
     $this->writeBranchStatus();
 
 
     if ($s->enableFileStatus && $status['has_index']) {
-      $this->write($s->beforeIndex);
+      $this->write($s->beforeIndex, $s->beforeIndexColor);
       $this->writeGitIndexStatus();
 
       if ($status['has_working']) {
-        $this->write($s->delimStatus);
+        $this->write($s->delimStatus, $s->delimStatusColor);
       }
     }
 
@@ -62,12 +64,15 @@ class Prompt {
       $this->writeGitStashCount();
     }
 
-    $this->write($s->afterStatus);
+    $this->write($s->afterStatus, $s->afterStatusColor);
 
     # When status is first, place the separator after the status summary
     if ($s->defaultPromptWriteStatusFirst) {
       $this->write($s->pathStatusSeparator);
     }
+
+    $this->write($s->defaultPromptBeforeSuffix);
+    $this->write($s->defaultPromptSuffix);
 
     $this->log->log('Finished creating prompt');
 
@@ -95,91 +100,96 @@ class Prompt {
       return [];
     }
 
-
     if (($status['behind_by'] >= 1) && ($status['ahead_by'] >= 1)) {
       # We are both behind and ahead of remote
-      $branchStatusTextSpan = $s->branchBehindAndAheadStatusSymbol;
+      $color = $s->branchBehindAndAheadColor;
     }
     elseif ($status['behind_by'] >= 1) {
       # We are behind remote
-      $branchStatusTextSpan = $s->branchBehindStatusSymbol;
+      $color = $s->branchBehindColor;
     }
     elseif ($status['ahead_by'] >= 1) {
       # We are ahead of remote
-      $branchStatusTextSpan = $s->branchAheadStatusSymbol;
+      $color = $s->branchAheadColor;
     }
 
-    if(!isset($branchStatusTextSpan)) {
-      $branchStatusTextSpan = ['', $s->branchColor];
+    if(!isset($color)) {
+      $color = $s->branchColor;
     }
 
-    $this->log->log('Branch color: ' . $branchStatusTextSpan[1]);
-
-    return $branchStatusTextSpan;
+    return $color;
   }
 
   private function writeBranchName($no_leading_space) {
     $status = $this->status;
 
-    $branchNameTextSpan = $this->getGitBranchStatusColor();
-    $branchNameTextSpan[0] = $this->formatGitBranchName($status['branch']);
+    $branch_name = $this->formatGitBranchName($status['branch']);
+    $branch_color = $this->getGitBranchStatusColor();
 
     if (!$no_leading_space) {
-      $branchNameTextSpan[0] = ' ' . $branchNameTextSpan[0];
+      $branch_name = ' ' . $branch_name;
     }
 
-    $this->write($branchNameTextSpan);
+    $this->write($branch_name, $branch_color);
   }
 
   private function writeBranchStatus($no_leading_space = FALSE) {
     $s = $this->settings;
     $status = $this->status;
 
-    $branchStatusTextSpan = $this->getGitBranchStatusColor();
+    $branchStatus = '';
+    $branchColor = $this->getGitBranchStatusColor();
 
     if (!$status['upstream']) {
-      $branchStatusTextSpan[0] = $s->branchUntrackedText;
+      $branchStatus = $s->branchUntrackedText;
     }
     elseif ($status['upstream_gone']) {
       # Upstream branch is gone
-      $branchStatusTextSpan[0] = $s->branchGoneStatusSymbol[0];
+      $branchStatus = $s->branchGoneStatusSymbol;
+      $branchColor = $s->branchGoneColor;
     }
     elseif (($status['behind_by'] == 0) && ($status['ahead_by'] == 0)) {
       # We are aligned with remote
-      $branchStatusTextSpan[0] = $s->branchIdenticalStatusSymbol[0];
+      $branchStatus = $s->branchIdenticalStatusSymbol;
+      $branchColor = $s->branchIdenticalColor;
     }
     elseif (($status['behind_by'] >= 1) && ($status['ahead_by'] >= 1)) {
       # We are both behind and ahead of remote
       if ($s->branchBehindAndAheadDisplay == 'Full') {
-        $branchStatusTextSpan[0] = "{$s->branchBehindStatusSymbol[0]}{$s['behind_by']} {$s->branchAheadStatusSymbol[0]}{$status['ahead_by']}";
+        $branchStatus = "{$s->branchBehindStatusSymbol}{$s['behind_by']} {$s->branchAheadStatusSymbol}{$status['ahead_by']}";
+        $branchColor = $s->branchBehindAndAheadColor;
       }
       elseif ($s->branchBehindAndAheadDisplay == 'Compact') {
-        $branchStatusTextSpan[0] = $status['behind_by'] . $s->branchBehindAndAheadStatusSymbol[0] . $status['ahead_by'];
+        $branchStatus = $status['behind_by'] . $s->branchBehindAndAheadStatusSymbol . $status['ahead_by'];
+        $branchColor = $s->branchBehindAndAheadColor;
       }
     }
     elseif ($status['behind_by'] >= 1) {
       # We are behind remote
       if (($s->branchBehindAndAheadDisplay == 'Full') || ($s->branchBehindAndAheadDisplay == 'Compact')) {
-        $branchStatusTextSpan[0] = $s->branchBehindStatusSymbol[0] . $status['behind_by'];
+        $branchStatus = $s->branchBehindStatusSymbol . $status['behind_by'];
+        $branchColor = $s->branchBehindColor;
       }
     }
     elseif ($status['ahead_by'] >= 1) {
       # We are ahead of remote
       if (($s->branchBehindAndAheadDisplay == 'Full') || ($s->branchBehindAndAheadDisplay == 'Compact')) {
-        $branchStatusTextSpan[0] = $s->branchAheadStatusSymbol[0] . $status['ahead_by'];
+        $branchStatus = $s->branchAheadStatusSymbol . $status['ahead_by'];
+        $branchColor = $s->branchAheadColor;
       }
     }
     else {
       # This condition should not be possible but defaulting the variables to be safe
-      $branchStatusTextSpan[0] = '?';
+      $branchStatus = '?';
+      $branchColor = 'Red';
     }
 
-    if ($branchStatusTextSpan[0]) {
+    if ($branchStatus) {
       if (!$no_leading_space) {
-        $branchStatusTextSpan[0] = ' ' . $branchStatusTextSpan[0];
+        $branchStatus = ' ' . $branchStatus;
       }
 
-      $this->write($branchStatusTextSpan);
+      $this->write($branchStatus, $branchColor);
     }
 
   }
@@ -301,24 +311,26 @@ class Prompt {
 
     # No uncommited changes
     $localStatusSymbol = $s->localDefaultStatusSymbol;
+    $localStatusColor = $s->localDefaultStatusColor;
 
     if ($status['has_working']) {
       $this->log->log('has_working: ' . $status['has_working'] );
       # We have un-staged files in the working tree
       $localStatusSymbol = $s->localWorkingStatusSymbol;
+      $localStatusColor = $s->localWorkingStatusColor;
     }
     elseif ($status['has_index']) {
       # We have staged but uncommited files
       $localStatusSymbol = $s->localStagedStatusSymbol;
+      $localStatusColor = $s->localStagedStatusColor;
     }
 
-    if ($localStatusSymbol[0]) {
-      $textSpan = $localStatusSymbol;
+    if ($localStatusSymbol) {
       if (!$no_leading_space) {
-        $textSpan[0] = ' ' . $localStatusSymbol[0];
+        $localStatusSymbol = ' ' . $localStatusSymbol;
       }
 
-      $this->write($textSpan);
+      $this->write($localStatusSymbol, $localStatusColor);
     }
 
   }
@@ -330,9 +342,9 @@ class Prompt {
     if ($status['stash_count'] > 0) {
       $stashText = $status['stash_count'];
 
-      $this->write($s->beforeStash);
+      $this->write($s->beforeStash, $s->beforeStashColor);
       $this->write($stashText);
-      $this->write($s->afterStash);
+      $this->write($s->afterStash, $s->afterStashColor);
     }
   }
 

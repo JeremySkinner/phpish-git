@@ -44,14 +44,23 @@ function color($color, $offset = 0) {
 
   if ($color !== '') {
     $code = $ansi_colors[$color] + $offset;
-
-    if ($color == 'Cyan') {
-      print "$code\n";
-    }
-
     return "{$ansi_esc}{$code}m";
   }
 
   $code = $ansi_default + $offset;
   return "{$ansi_esc}{$code}m";
+}
+
+function startsWith($haystack, $needle)
+{
+  $length = strlen($needle);
+  return (substr($haystack, 0, $length) === $needle);
+}
+
+function endsWith($haystack, $needle)
+{
+  $length = strlen($needle);
+
+  return $length === 0 ||
+    (substr($haystack, -$length) === $needle);
 }

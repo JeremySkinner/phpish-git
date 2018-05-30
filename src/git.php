@@ -1,10 +1,11 @@
 <?php
 
 function getGitDirectory() {
+  
   $rtn=0;
   $out=[];
 
-  $dir = exec('git rev-parse --git-dir', $out, $rtn);
+  $dir = exec('git rev-parse --git-dir 2> /dev/null', $out, $rtn);
 
   if ($rtn !== 0) {
     return null;

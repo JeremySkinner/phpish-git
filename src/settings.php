@@ -6,7 +6,7 @@ class GitSettings {
     public $enableFileStatus = true;
 
     public $defaultColor = '';
-    public $branchColor = 'Cyan';
+    public $branchColor = 'DarkCyan';
     public $indexColor = 'DarkGreen';
     public $workingColor = 'DarkRed';
     public $stashColor = 'Red';
@@ -32,15 +32,15 @@ class GitSettings {
     public $localWorkingStatusSymbol = '!';
     public $localWorkingStatusColor = 'DarkRed';
     public $localStagedStatusSymbol  = '~';
-    public $localStagedStatusColor = 'Cyan';
+    public $localStagedStatusColor = 'DarkCyan';
 
     public $branchGoneStatusSymbol           = "\u{00D7}"; # × Multiplication sign
     public $branchIdenticalStatusSymbol      = "\u{2261}"; # ≡ Three horizontal lines
     public $branchAheadStatusSymbol          = "\u{2191}"; # ↑ Up arrow
     public $branchBehindStatusSymbol         = "\u{2193}"; # ↓ Down arrow
     public $branchBehindAndAheadStatusSymbol = "\u{2195}"; # ↕ Up & Down arrow
-    public $branchGoneColor                  = 'DarkCyan';
-    public $branchIdenticalColor             = 'Cyan';
+    public $branchGoneColor                  = 'Cyan';
+    public $branchIdenticalColor             = 'DarkCyan';
     public $branchAheadColor                 = 'Green';
     public $branchBehindColor                = 'Red';
     public $branchBehindAndAheadColor        = 'Yellow';
@@ -65,12 +65,14 @@ class GitSettings {
     public $describeStyle = '';
     //public $windowTitle = {param($GitStatus, [bool]$IsAdmin) "$(if ($IsAdmin) {'Admin: '})$(if ($GitStatus) {"$($GitStatus.RepoName) [$($GitStatus.Branch)]"} else {Get-PromptPath}) ~ PowerShell $($PSVersionTable.PSVersion) $([IntPtr]::Size * 8)-bit ($PID)"}
 
-    public $defaultPromptPrefix       = '';
+// "\[\033]0;\w\007\]\n${CYAN}\u ${D}at ${ORANGE}\h ${D}in ${GREEN}\w ${D}"
+
+    public $defaultPromptPrefix       = '[{DarkCyan}\u{Reset}@{DarkYellow}\h {DarkGreen}\W{Reset}]';
     public $defaultPromptPath         = ''; //'$(Get-PromptPath)'
     public $defaultPromptBeforeSuffix = '';
 //    public $defaultPromptDebug        = ' [DBG]:';
 //    public $defaultPromptDebugColor   = 'Magenta';
-    public $defaultPromptSuffix       = '> ';
+    public $defaultPromptSuffix       = '$ ';
     public $defaultPromptSuffixColor = '';
 
     public $defaultPromptAbbreviateHomeDirectory = true;

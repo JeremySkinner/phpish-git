@@ -29,7 +29,7 @@ class Prompt {
     $status = $this->status;
     $s = $this->settings;
 
-    $this->write($s->defaultPromptPrefix);
+    $this->write($s->defaultPromptPrefix, null, null, true);
 
     if (!$status || !$s) {
       return $this->output;
@@ -72,7 +72,7 @@ class Prompt {
     }
 
     $this->write($s->defaultPromptBeforeSuffix);
-    $this->write($s->defaultPromptSuffix);
+    $this->write($s->defaultPromptSuffix, $s->defaultPromptSuffixColor);
 
     $this->log->log('Finished creating prompt');
 
@@ -349,7 +349,7 @@ class Prompt {
     }
   }
 
-  private function write($object, $foregroundColor = NULL, $backgroundColor = NULL, $color = NULL) {
+  private function write($object, $foregroundColor = NULL, $backgroundColor = NULL, $embedded_colors = false) {
     global $ansi_esc;
     $output = &$this->output;
 
@@ -386,10 +386,13 @@ class Prompt {
     }
 
     if ($ansi) {
-      $fg = foreground($fgColor);
-      $bg = background(''); //@todo support bg colors
-
-      $output .= $fg . $bg . $object . $ansi_esc . '0m';
+      if ($embedded_colors) {
+        $output .= colorTextWithEmbeddedColors($object);
+      }
+      else {
+        $output .= colorText($object, $fgColor);
+      }
+      
     }
     else {
       $output .= $object;

@@ -64,13 +64,13 @@ class GitSettings {
 
     public $describeStyle = '';
     //public $windowTitle = {param($GitStatus, [bool]$IsAdmin) "$(if ($IsAdmin) {'Admin: '})$(if ($GitStatus) {"$($GitStatus.RepoName) [$($GitStatus.Branch)]"} else {Get-PromptPath}) ~ PowerShell $($PSVersionTable.PSVersion) $([IntPtr]::Size * 8)-bit ($PID)"}
-
-    public $defaultPromptPrefix       = '';
+    
+    public $defaultPromptPrefix       = '[\u@\h \W ]';
     public $defaultPromptPath         = ''; //'$(Get-PromptPath)'
     public $defaultPromptBeforeSuffix = '';
 //    public $defaultPromptDebug        = ' [DBG]:';
 //    public $defaultPromptDebugColor   = 'Magenta';
-    public $defaultPromptSuffix       = '$ ';
+    public $defaultPromptSuffix       = '\$ ';
     public $defaultPromptSuffixColor = '';
 
     public $defaultPromptAbbreviateHomeDirectory = true;

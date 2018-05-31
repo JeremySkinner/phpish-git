@@ -67,7 +67,7 @@ class GitSettings {
 
 // "\[\033]0;\w\007\]\n${CYAN}\u ${D}at ${ORANGE}\h ${D}in ${GREEN}\w ${D}"
 
-    public $defaultPromptPrefix       = '[{Cyan}\u{Reset}@{Yellow}\h {Green}\W{Reset}]';
+    public $defaultPromptPrefix       = '\[\033]0;\w\007\][{Cyan}\u{Reset}@{Yellow}\h {Green}\W{Reset}]';
     public $defaultPromptPath         = ''; //'$(Get-PromptPath)'
     public $defaultPromptBeforeSuffix = '';
 //    public $defaultPromptDebug        = ' [DBG]:';

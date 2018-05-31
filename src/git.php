@@ -217,7 +217,7 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Log
   }
 }
 
-function execGit($args, &$rtn) {
+function execGit($args, &$rtn, $as_array=false) {
   $command = 'git ' . $args;
 
   $process = proc_open($command, [
@@ -245,5 +245,10 @@ function execGit($args, &$rtn) {
   proc_close($process);
 
   $rtn = $status['exitcode'];
+
+  if ($as_array) {
+    return explode("\n", $stdOutput);
+  }
+
   return $stdOutput;
 }

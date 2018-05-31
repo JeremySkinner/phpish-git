@@ -99,3 +99,7 @@ class GitSettings {
     return $settings;
   }
 }
+
+class PromptSettings {
+  public $allCommands = false;
+}

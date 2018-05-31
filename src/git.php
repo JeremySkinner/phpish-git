@@ -1,11 +1,8 @@
 <?php
 
 function getGitDirectory() {
-  
   $rtn=0;
-  $out=[];
-
-  $dir = exec('git rev-parse --git-dir 2> /dev/null', $out, $rtn);
+  $dir = execGit('rev-parse --git-dir', $rtn);
 
   if ($rtn !== 0) {
     return null;
@@ -63,7 +60,7 @@ function getBranch($dir = null, $log = null) {
 
     $log->log('Trying symbolic ref');
 
-    $b = exec('git symbolic-ref HEAD -q', $out, $rtn);
+    $b = execGit('symbolic-ref HEAD -q', $rtn);
 
     //@todo posh-git tries to use describe or tag if sym ref failed.
     //if these fail then it tries to parse the contents of HEAD
@@ -72,9 +69,9 @@ function getBranch($dir = null, $log = null) {
 
   $log->log('Inside git directory?');
 
-  if ('true' == exec('git rev-parse --is-inside-git-dir')) {
+  if ('true' == execGit('rev-parse --is-inside-git-dir', $rtn)) {
     $log->log('Inside git directory');
-    if ('true' == exec('git rev-parse --is-bare-repository')) {
+    if ('true' == execGit('git rev-parse --is-bare-repository', $rtn)) {
       $c = 'BARE:';
     }
     else {
@@ -126,7 +123,9 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Log
         case "Normal":  $untrackedFilesOption = "-unormal"; break;
       }
 
-      $status = exec("git -c core.quotepath=false -c color.status=false status $untrackedFilesOption --short --branch", $out, $ret);
+      $status = execGit("-c core.quotepath=false -c color.status=false status $untrackedFilesOption --short --branch", $rtn);
+      $status = explode("\n", $status);
+
       if($settings->enableStashStatus) {
         $log->log('Getting stash count');
         //@todo implement stash
@@ -135,7 +134,7 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Log
 
       $log->log('Parsing status');
 
-      foreach($out as $status_line) {
+      foreach($status as $status_line) {
         if (preg_match('/^(?<index>[^#])(?<working>.) (?<path1>.*?)(?: -> (?<path2>.*))?$/', $status_line, $matches)) {
           $log->log("Status 1: $status_line");
           switch ($matches['index']) {
@@ -216,4 +215,35 @@ function getGitStatus(GitSettings $settings, $gitDir = null, $force = false, Log
       return $output;
     }
   }
+}
+
+function execGit($args, &$rtn) {
+  $command = 'git ' . $args;
+
+  $process = proc_open($command, [
+      0 => ['pipe', 'r'],
+      1 => ['pipe', 'w'],
+      2 => ['pipe', 'w'],
+    ],
+    $pipes
+  );
+
+  if (!is_resource($process)) {
+    throw new \RuntimeException('Could not create a valid process');
+  }
+
+  // This will prevent to program from continuing until the processes is complete
+  // Note: exitcode is created on the final loop here
+  $status = proc_get_status($process);
+  while($status['running']) {
+    $status = proc_get_status($process);
+  }
+
+  $stdOutput = stream_get_contents($pipes[1]);
+  $stdError  = stream_get_contents($pipes[2]);
+
+  proc_close($process);
+
+  $rtn = $status['exitcode'];
+  return $stdOutput;
 }

@@ -100,6 +100,6 @@ class GitSettings {
   }
 }
 
-class PromptSettings {
+class TabSettings {
   public $allCommands = false;
 }

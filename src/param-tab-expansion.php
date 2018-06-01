@@ -124,7 +124,7 @@ class ParamTabExpansion {
       'diff-algorithm' => 'default patience minimal histogram myers',
       'color' => 'always never auto',
       'word-diff' => 'color plain porcelain none',
-      'abbrev' = '7 8 9 10',
+      'abbrev' => '7 8 9 10',
       'diff-filter' => 'A C D M R T U X B *',
       'inter-hunk-context' => '0 1 2 3 4 5',
       'ignore-submodules' => 'none untracked dirty all',
@@ -164,7 +164,7 @@ class ParamTabExpansion {
       'rebase' => 'false true preserve',
     ],
     'push' => [
-      'recurse-submodules' = 'check on-demand'
+      'recurse-submodules' => 'check on-demand'
     ],
     'rebase' => [
         'strategy' => 'resolve recursive octopus ours subtree'

@@ -23,7 +23,9 @@ source "path/to/phpish-git/git-tab-expansion.sh"
 PROMPT_COMMAND='git-prompt'
 ```
 
-# How do I configure it?
+# What do the symbols mean?
+
+# How do I customize it?
 
 Layout and colours of the prompt can be configured using environment variables. For example, I like to use a verbose multi-lined prompt:
 

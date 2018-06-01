@@ -425,6 +425,7 @@ class TabExpansion {
     //    return $Global:TortoiseGitSettings.TortoiseGitCommands.Keys.GetEnumerator() | Sort-Object | Where-Object { $_ -like "$($matches['cmd'])*" }
     //    }
 
+
     // Handles gitk
     if (preg_match("/^gitk.* (?<ref>\S*)$/", $input, $matches)) {
       return $this->branches($matches['ref'], TRUE);
@@ -515,6 +516,7 @@ class TabExpansion {
     # Handles git reset HEAD <path>
     # Handles git reset HEAD -- <path>
     if (preg_match("/^reset.* HEAD(?:\s+--)? (?<path>\S*)$/", $input, $matches)) {
+      $status = $status ?? Git::status(new GitSettings());
       return $this->index($status, $matches['path']);
     }
 
@@ -525,26 +527,31 @@ class TabExpansion {
 
     # Handles git add <path>
     if (preg_match("/^add.* (?<files>\S*)$/", $input, $matches)) {
+      $status = $status ?? Git::status(new GitSettings());
       return $this->addFiles($status, $matches['files']);
     }
 
     # Handles git checkout -- <path>
     if (preg_match("/^checkout.* -- (?<files>\S*)$/", $input, $matches)) {
+      $status = $status ?? Git::status(new GitSettings());
       return $this->checkoutFiles($status, $matches['files']);
     }
 
     # Handles git rm <path>
     if (preg_match("/^rm.* (?<index>\S*)$/", $input, $matches)) {
+      $status = $status ?? Git::status(new GitSettings());
       return $this->deleted($status, $matches['index']);
     }
 
     # Handles git diff/difftool <path>
     if (preg_match("/^(?:diff|difftool)(?:.* (?<staged>(?:--cached|--staged))|.*) (?<files>\S*)$/", $input, $matches)) {
+      $status = $status ?? Git::status(new GitSettings());
       return $this->diffFiles($status, $matches['files'], $matches['staged']);
     }
 
     # Handles git merge/mergetool <path>
     if (preg_match("/^(?:merge|mergetool).* (?<files>\S*)$/", $input, $matches)) {
+      $status = $status ?? Git::status(new GitSettings());
       return $this->mergeFiles($status, $matches['files']);
     }
 

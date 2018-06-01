@@ -243,8 +243,6 @@ class Git {
     $stdOutput = stream_get_contents($pipes[1]);
     $stdError  = stream_get_contents($pipes[2]);
 
-    print($stdError);
-
     proc_close($process);
 
     $rtn = $status['exitcode'];

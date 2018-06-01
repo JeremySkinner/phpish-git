@@ -171,7 +171,7 @@ class Git {
         }
 
         if(!$branch) {
-          $branch = getBranch($gitDir, $log);
+          $branch = Git::branch($gitDir, $log);
         }
 
         $log->log('Building status');

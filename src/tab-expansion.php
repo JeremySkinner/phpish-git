@@ -134,8 +134,6 @@ class TabExpansion {
   }
 
   private function quoteStringWithSpecialChars($input) {
-    return $input;
-
     // @todo this doesn't seem to work properly.
     //    if ($input && preg_match("/\s+|#|@|\$|;|,|''|\{|\}|\(|\)/", $input)) {
     //      $input = str_replace("'", "''", $input);

@@ -108,6 +108,7 @@ class TabExpansion {
     $this->gitCommandsWithLongParams = implode('|', array_keys(ParamTabExpansion::$longGitParams));
     $this->gitCommandsWithShortParams = implode('|', array_keys(ParamTabExpansion::$shortGitParams));
     $this->gitCommandsWithParamValues = implode('|', array_keys(ParamTabExpansion::$gitParamValues));
+    // @todo do we care about vsts?
     //$this->vstsCommandsWithShortParams = implode('|', array_keys(ParamTabExpansion::shortVstsParams));
     //$this->vstsCommandsWithLongParams = implode('|', array_keys(ParamTabExpansion::longVstsParams));
 
@@ -305,14 +306,14 @@ class TabExpansion {
 
   private function files($filter, $files) {
     asort($files);
-    $files = array_filter($files, function ($x) use ($filter) {
+    $files = array_filter($files, function ($x) use ($files, $filter) {
       return startsWith($x, $filter);
     });
     return array_map([$this, 'quoteStringWithSpecialChars'], $files);
   }
 
   private function index($status, $filter) {
-    return $this->files($filter, $status['index']);
+    return $this->files($filter, $status['index']['added'] + $status['index']['unmerged'] + $status['index']['modified'] + $status['index']['deleted']);
   }
 
   private function addFiles($status, $filter) {
@@ -411,11 +412,6 @@ class TabExpansion {
       return "--$param=$val";
     }, $param_values);
   }
-
-  //function Expand-GitCommand($Command) {
-  //$res = Invoke-Utf8ConsoleCommand { GitTabExpansionInternal $Command $Global:GitStatus }
-  //    $res
-  //}
 
   public function expand($input, $status = NULL) {
     $ignoreGitParams = "(?<params>\s+-(?:[aA-zZ0-9]+|-[aA-zZ0-9][aA-zZ0-9-]*)(?:=\S+)?)*";

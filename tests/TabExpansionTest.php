@@ -210,61 +210,116 @@ class TabExpansionTest extends TestCase {
       ->single('master');
   }
 
+  public function testGitk() {
+    expand('gitk ')
+      ->contains('master');
+  }
 
-  //@todo do we care about porting these tests? Why would we ever run this in powershell?
-/*
-  Context 'PowerShell Special Chars Tests' {
-        BeforeAll {
-            [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssigments', '')]
-            $repoPath = NewGitTempRepo -MakeInitialCommit
-        }
-        AfterAll {
-            RemoveGitTempRepo $repoPath
-        }
-        AfterEach {
-            ResetGitTempRepoWorkingDir $repoPath
-        }
-        It 'Tab completes remote name with special char as quoted' {
-            &$gitbin remote add '#test' https://github.com/dahlbyk/posh-git.git 2> $null
+  public function testExpandsBaseCommands() {
+    expand('git ')
+      ->contains('checkout');
 
-            $result = & $module GitTabExpansionInternal 'git push #'
-            $result | Should BeExactly "'#test'"
-        }
-        It 'Tab completes branch name with special char as quoted' {
-            &$gitbin branch '#develop' 2>$null
+    expand('git check')
+      ->single('checkout');
+  }
 
-            $result = & $module GitTabExpansionInternal 'git checkout #'
-            $result | Should BeExactly "'#develop'"
-        }
-        It 'Tab completes git feature branch name with special char as quoted' {
-            &$gitbin branch '#develop' 2>$null
+  public function testBranch() {
+    expand('git branch -d ')
+      ->contains('master');
 
-            $result = & $module GitTabExpansionInternal 'git flow feature list #'
-            $result | Should BeExactly "'#develop'"
-        }
-        It 'Tab completes a tag name with special char as quoted' {
-            $tag = "v1.0.0;abcdef"
-            &$gitbin tag $tag
+    expand('git branch -d ma')
+      ->single('master');
 
-            $result = & $module GitTabExpansionInternal 'git show v1'
-            $result | Should BeExactly "'$tag'"
-        }
-        It 'Tab completes a tag name with single quote correctly' {
-            &$gitbin tag "v2.0.0'"
+    expand('git branch foo ')
+      ->contains('master');
 
-            $result = & $module GitTabExpansionInternal 'git show v2'
-            $result | Should BeExactly "'v2.0.0'''"
-        }
-        It 'Tab completes add file in working dir with special char as quoted' {
-            $filename = 'foo{bar} (x86).txt';
-            New-Item $filename -ItemType File
+    expand('git branch foo ma')
+      ->contains('master');
+  }
 
-            $gitStatus = & $module Get-GitStatus
 
-            $result = & $module GitTabExpansionInternal 'git add ' $gitStatus
-            $result | Should BeExactly "'$filename'"
-        }
+  public function testHelp() {
+    expand('git help ')
+      ->contains('checkout');
+  }
+
+  public function testReset() {
+    try {
+      $myfile = fopen("foo.txt", "w");
+      fwrite($myfile, "foo");
+
+      expand('git RESET HEAD ')
+        ->contains('foo.txt');
+
+      expand('git RESET HEAD -- ')
+        ->contains('foo.txt');
     }
- * */
+    finally {
+      if($myfile) {
+        fclose($myfile);
+        unlink('foo.txt');
+      }
+    }
+  }
+
+  public function handlesCheckout() {
+    expand('git checkout ')
+      ->contains('master')
+      ->contains('origin/master')
+      ->contains('origin/HEAD')
+      ->contains('', FALSE);
+
+    //@todo should test tags in here too
+  }
+
+//  public function testCheckoutDashDash() {
+//    expand('git checkout -- ')
+//  }
+
+  public function testRm() {
+    expand('git rm ')
+      ->contains('autoload.php');
+  }
+
+  public function testDiff() {
+    //@todo
+    expand('git diff ');
+    expand('git difftool ');
+  }
+
+  public function testMerge() {
+    //@todo
+    expand('git merge ');
+    expand('git mergetool ');
+  }
+
+  public function testWorktree() {
+    //@todo
+  }
+
+  public function testCommandRef() {
+    expand('git cherry-pick ')
+      ->contains('master');
+
+    //@todo tags
+  }
+
+  public function testCommandParams() {
+    expand('git init --')
+      ->contains('--quiet')
+      ->contains('--bare')
+      ->contains('--shared=');
+  }
+
+  public function testCommandParamValues() {
+    expand('git blame --encoding=')
+      ->contains('--encoding=utf-8')
+      ->contains('--encoding=none');
+  }
+
+  public function testShortParams() {
+    expand('git init -')
+      ->contains('-q');
+  }
 }
 

@@ -12,7 +12,7 @@ class Prompt {
 
   public static function create(GitSettings $settings) {
     $log = new Logger($settings->debug);
-    return new static($settings, getGitStatus($settings, null, false, $log), $log);
+    return new static($settings, Git::status($settings, null, false, $log), $log);
   }
 
   public function __construct(GitSettings $settings, $status, Logger $log) {

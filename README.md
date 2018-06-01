@@ -11,7 +11,7 @@ I wanted the same functionality provided by posh-git when connected to Linux ser
 
 # Why PHP and not Ruby/Python/Javascript/Some other language?
 
-My current job is working with Drupal and PHP, after doing 10 years with C#/.net. This seemed like a fun way to get back into writing PHP after ot having done so for a long time. 
+My current job is working with Drupal and PHP after doing 10 years with C#/.net. This seemed like a fun way to get back into writing PHP after not having done so for a long time. 
 
 # How do I install it?
 

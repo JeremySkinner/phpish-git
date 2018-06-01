@@ -27,7 +27,7 @@ PROMPT_COMMAND='git-prompt'
 
 Layout and colours of the prompt can be configured using environment variables. For example, I like to use a verbose multi-lined prompt:
 
-<img width="1004" alt="screen shot 2018-05-31 at 18 10 39" src="https://user-images.githubusercontent.com/90130/40796788-1df3980e-64fe-11e8-8aca-cb5ba83c40ef.png"> 
+<img width="1022" alt="screen shot 2018-05-31 at 18 14 46" src="https://user-images.githubusercontent.com/90130/40796931-84da0a26-64fe-11e8-9953-9e6f9f51fc00.png">
 
 This layout is achieved done by setting the following environment variables in my .bashrc:
 

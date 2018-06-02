@@ -411,18 +411,23 @@ class TabExpansion {
     }, $param_values);
   }
 
+  public function writeExpansion($input, $status = NULL) {
+    foreach($this->expand($input, $status) as $elem) {
+      print "$elem\n";
+    }
+  }
+
   public function expand($input, $status = NULL) {
     $ignoreGitParams = "(?<params>\s+-(?:[aA-zZ0-9]+|-[aA-zZ0-9][aA-zZ0-9-]*)(?:=\S+)?)*";
 
     if (preg_match("/^git (?<cmd>\S+)(?<args> .*)$/", $input, $matches)) {
       $input = $this->expandGitAlias($matches['cmd'], $matches['args']);
     }
-    //    # Handles tgit <command> (tortoisegit)
+    //    // Handles tgit <command> (tortoisegit)
     //    if ($lastBlock -match "^$(Get-AliasPattern tgit) (?<cmd>\S*)$") {
     //    # Need return statement to prevent fall-through.
     //    return $Global:TortoiseGitSettings.TortoiseGitCommands.Keys.GetEnumerator() | Sort-Object | Where-Object { $_ -like "$($matches['cmd'])*" }
     //    }
-
 
     // Handles gitk
     if (preg_match("/^gitk.* (?<ref>\S*)$/", $input, $matches)) {
@@ -436,124 +441,122 @@ class TabExpansion {
       return [];
     }
 
-    //    switch -regex ($lastBlock -replace "^$(Get-AliasPattern git) ","") {
-
-    # Handles git <cmd> <op>
+    // Handles git <cmd> <op>
     $subcommands = implode('|', array_keys($this->subComands));
     if (preg_match("/^(?<cmd>$subcommands)\s+(?<op>\S*)$/", $input, $matches)) {
       return $this->cmdOperations($this->subComands, $matches['cmd'], $matches['op']);
     }
 
-    //        # Handles git flow <cmd> <op>
+    //        // Handles git flow <cmd> <op>
     //        "^flow (?<cmd>$($gitflowsubcommands.Keys -join '|'))\s+(?<op>\S*)$" {
     //      gitCmdOperations $gitflowsubcommands $matches['cmd'] $matches['op']
     //        }
 
-    # Handles git flow <command> <op> <name>
+    // Handles git flow <command> <op> <name>
     //        "^flow (?<command>\S*)\s+(?<op>\S*)\s+(?<name>\S*)$" {
     //      gitFeatures $matches['name'] $matches['command']
     //        }
 
-    # Handles git remote (rename|rm|set-head|set-branches|set-url|show|prune) <stash>
+    // Handles git remote (rename|rm|set-head|set-branches|set-url|show|prune) <stash>
     if (preg_match("/^remote.* (?:rename|rm|set-head|set-branches|set-url|show|prune).* (?<remote>\S*)$/", $input, $matches)) {
       return $this->remotes($matches['remote']);
     }
 
-    # Handles git stash (show|apply|drop|pop|branch) <stash>
+    // Handles git stash (show|apply|drop|pop|branch) <stash>
     if (preg_match("/^stash (?:show|apply|drop|pop|branch).* (?<stash>\S*)$/", $input, $matches)) {
       return $this->stashes($matches['stash']);
     }
 
-    # Handles git bisect (bad|good|reset|skip) <ref>
+    // Handles git bisect (bad|good|reset|skip) <ref>
     if (preg_match("/^bisect (?:bad|good|reset|skip).* (?<ref>\S*)$/", $input, $matches)) {
       return $this->branches($matches['ref'], TRUE);
     }
 
-    # Handles git tfs unshelve <shelveset>
+    // Handles git tfs unshelve <shelveset>
     //        "^tfs +unshelve.* (?<shelveset>\S*)$" {
     //      gitTfsShelvesets $matches['shelveset']
     //        }
 
-    # Handles git branch -d|-D|-m|-M <branch name>
-    # Handles git branch <branch name> <start-point>
+    // Handles git branch -d|-D|-m|-M <branch name>
+    // Handles git branch <branch name> <start-point>
     if (preg_match("/^branch.* (?<branch>\S*)$/", $input, $matches)) {
       return $this->branches($matches['branch']);
     }
 
-    # Handles git <cmd> (commands & aliases)
+    // Handles git <cmd> (commands & aliases)
     if (preg_match("/^(?<cmd>\S*)$/", $input, $matches)) {
       return $this->commands($matches['cmd'], TRUE);
     }
 
-    # Handles git help <cmd> (commands only)
+    // Handles git help <cmd> (commands only)
     if (preg_match("/^help (?<cmd>\S*)$/", $input, $matches)) {
       return $this->commands($matches['cmd'], FALSE);
     }
 
-    # Handles git push remote <ref>:<branch>
-    # Handles git push remote +<ref>:<branch>
+    // Handles git push remote <ref>:<branch>
+    // Handles git push remote +<ref>:<branch>
     if (preg_match("/^push{$ignoreGitParams}\s+(?<remote>[^\s-]\S*).*\s+(?<force>\+?)(?<ref>[^\s\:]*\:)(?<branch>\S*)$/", $input, $matches)) {
       return $this->remoteBranches($matches['remote'], $matches['ref'], $matches['branch'], $matches['force']); /* -prefix $matches['force'] */
     }
 
-    # Handles git push remote <ref>
-    # Handles git push remote +<ref>
-    # Handles git pull remote <ref>
+    // Handles git push remote <ref>
+    // Handles git push remote +<ref>
+    // Handles git pull remote <ref>
     if (preg_match("/^(?:push|pull){$ignoreGitParams}\s+(?<remote>[^\s-]\S*).*\s+(?<force>\+?)(?<ref>[^\s\:]*)$/", $input, $matches)) {
       return $this->branches($matches['ref'], FALSE, $matches['force'])
         + $this->tags($matches['ref'], $matches['force']);
     }
 
-    # Handles git pull <remote>
-    # Handles git push <remote>
-    # Handles git fetch <remote>
+    // Handles git pull <remote>
+    // Handles git push <remote>
+    // Handles git fetch <remote>
     if (preg_match("/^(?:push|pull|fetch)${ignoreGitParams}\s+(?<remote>\S*)$/", $input, $matches)) {
       return $this->remotes($matches['remote']);
     }
 
-    # Handles git reset HEAD <path>
-    # Handles git reset HEAD -- <path>
+    // Handles git reset HEAD <path>
+    // Handles git reset HEAD -- <path>
     if (preg_match("/^reset.* HEAD(?:\s+--)? (?<path>\S*)$/", $input, $matches)) {
       $status = $status ?? Git::status(new GitSettings());
       return $this->index($status, $matches['path']);
     }
 
-    # Handles git <cmd> <ref>
+    // Handles git <cmd> <ref>
     if (preg_match("/^commit.*-C\s+(?<ref>\S*)$/", $input, $matches)) {
       return $this->branches($matches['ref'], TRUE);
     }
 
-    # Handles git add <path>
+    // Handles git add <path>
     if (preg_match("/^add.* (?<files>\S*)$/", $input, $matches)) {
       $status = $status ?? Git::status(new GitSettings());
       return $this->addFiles($status, $matches['files']);
     }
 
-    # Handles git checkout -- <path>
+    // Handles git checkout -- <path>
     if (preg_match("/^checkout.* -- (?<files>\S*)$/", $input, $matches)) {
       $status = $status ?? Git::status(new GitSettings());
       return $this->checkoutFiles($status, $matches['files']);
     }
 
-    # Handles git rm <path>
+    // Handles git rm <path>
     if (preg_match("/^rm.* (?<index>\S*)$/", $input, $matches)) {
       $status = $status ?? Git::status(new GitSettings());
       return $this->deleted($status, $matches['index']);
     }
 
-    # Handles git diff/difftool <path>
+    // Handles git diff/difftool <path>
     if (preg_match("/^(?:diff|difftool)(?:.* (?<staged>(?:--cached|--staged))|.*) (?<files>\S*)$/", $input, $matches)) {
       $status = $status ?? Git::status(new GitSettings());
       return $this->diffFiles($status, $matches['files'], $matches['staged']);
     }
 
-    # Handles git merge/mergetool <path>
+    // Handles git merge/mergetool <path>
     if (preg_match("/^(?:merge|mergetool).* (?<files>\S*)$/", $input, $matches)) {
       $status = $status ?? Git::status(new GitSettings());
       return $this->mergeFiles($status, $matches['files']);
     }
 
-    # Handles git checkout <ref>
+    // Handles git checkout <ref>
     if (preg_match("/^(?:checkout).* (?<ref>\S*)$/", $input, $matches)) {
       $result = $this->branches($matches['ref'], TRUE);
       $result += $this->remoteUniqueBranches($matches['ref']);
@@ -562,30 +565,30 @@ class TabExpansion {
       return array_unique($result);
     }
 
-    # Handles git worktree add <path> <ref>
+    // Handles git worktree add <path> <ref>
     if (preg_match("/^worktree add.* (?<files>\S+) (?<ref>\S*)$/", $input, $matches)) {
       return $this->branches($matches['ref']);
     }
 
-    # Handles git <cmd> <ref>
+    // Handles git <cmd> <ref>
     if (preg_match("/^(?:cherry|cherry-pick|diff|difftool|log|merge|rebase|reflog\s+show|reset|revert|show).* (?<ref>\S*)$/", $input, $matches)) {
       return $this->branches($matches['ref'], TRUE)
         + $this->tags($matches['ref']);
     }
 
-    # Handles git <cmd> --<param>=<value>
+    // Handles git <cmd> --<param>=<value>
     $p = $this->gitCommandsWithParamValues;
     if (preg_match("/^(?<cmd>$p).* --(?<param>[^=]+)=(?<value>\S*)$/", $input, $matches)) {
       return $this->expandParamValues($matches['cmd'], $matches['param'], $matches['value']);
     }
 
-    # Handles git <cmd> --<param>
+    // Handles git <cmd> --<param>
     $p = $this->gitCommandsWithLongParams;
     if (preg_match("/^(?<cmd>$p).* --(?<param>\S*)$/", $input, $matches)) {
       return $this->expandLongParams(ParamTabExpansion::$longGitParams, $matches['cmd'], $matches['param']);
     }
 
-    # Handles git <cmd> -<shortparam>
+    // Handles git <cmd> -<shortparam>
     $p = $this->gitCommandsWithShortParams;
     if (preg_match("/^(?<cmd>$p).* -(?<shortparam>\S*)$/", $input, $matches)) {
       return $this->expandShortParams(ParamTabExpansion::$shortGitParams, $matches['cmd'], $matches['shortparam']);
@@ -593,18 +596,18 @@ class TabExpansion {
 
     return [];
 
-    # Handles git pr alias
+    // Handles git pr alias
     //        "vsts\.pr\s+(?<op>\S*)$" {
     //      gitCmdOperations $subcommands 'vsts.pr' $matches['op']
     //        }
 
-    # Handles git pr <cmd> --<param>
+    // Handles git pr <cmd> --<param>
     //        "vsts\.pr\s+(?<cmd>$vstsCommandsWithLongParams).*--(?<param>\S*)$"
     //        {
     //          expandLongParams $longVstsParams $matches['cmd'] $matches['param']
     //        }
 
-    # Handles git pr <cmd> -<shortparam>
+    // Handles git pr <cmd> -<shortparam>
     //        "vsts\.pr\s+(?<cmd>$vstsCommandsWithShortParams).*-(?<shortparam>\S*)$"
     //        {
     //          expandShortParams $shortVstsParams $matches['cmd'] $matches['shortparam']

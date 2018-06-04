@@ -12,7 +12,7 @@ class Git {
     return $dir;
   }
 
-  public static function getBranch($dir = null, $log = null) {
+  public static function branch($dir = null, $log = null) {
     if (!$dir) $dir = Git::directory();
     if (!$log) $log = Logger::null();
 
@@ -25,20 +25,21 @@ class Git {
       $r = '|REBASE-i';
       $b = file_get_contents("$dir/rebase-merge/head-name");
     }
-    elseif (file_exists("$dir\rebase-merge")) {
+    elseif (file_exists("$dir/rebase-merge")) {
       $log->log('Found rebase-merge');
       $r = '|REBASE-m';
-      $b = file_get_contents("$dir\rebase-merge\head-name");
+      $b = file_get_contents("$dir/rebase-merge/head-name");
     }
     else {
-      if (file_exists("$dir\rebase-apply")) {
+      $log->log('Looking for rebase apply...');
+      if (file_exists("$dir/rebase-apply")) {
         $log->log('Found rebase-apply');
-        if (file_exists("$dir\rebase-apply\rebasing")) {
-          $log->log('Found rebase-apply\rebasing');
+        if (file_exists("$dir/rebase-apply/rebasing")) {
+          $log->log('Found rebase-apply/rebasing');
           $r = '|REBASE';
         }
-        elseif (file_exists("$dir\rebase-apply\applying")) {
-          $log->log('Found rebase-apply\applying');
+        elseif (file_exists("$dir/rebase-apply/applying")) {
+          $log->log('Found rebase-apply/applying');
           $r = '|AM';
         }
         else {
@@ -46,15 +47,15 @@ class Git {
           $r = '|AM/REBASE';
         }
       }
-      elseif (file_exists("$dir\MERGE_HEAD")) {
+      elseif (file_exists("$dir/MERGE_HEAD")) {
         $log->log('Found MERGE_HEAD');
         $r = '|MERGING';
       }
-      elseif (file_exists("$dir\CHERRY_PICK_HEAD")) {
+      elseif (file_exists("$dir/CHERRY_PICK_HEAD")) {
         $log->log('Found CHERRY_PICK_HEAD');
         $r = '|CHERRY-PICKING';
       }
-      elseif (file_exists("$dir\BISECT_LOG")) {
+      elseif (file_exists("$dir/BISECT_LOG")) {
         $log->log('Found BISECT_LOG');
         $r = '|BISECTING';
       }
@@ -251,7 +252,7 @@ class Git {
       return array_filter(explode("\n", $stdOutput));
     }
 
-    return $stdOutput;
+    return trim($stdOutput);
   }
 }
 

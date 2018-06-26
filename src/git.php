@@ -64,9 +64,25 @@ class Git {
 
       $b = Git::exec('symbolic-ref HEAD -q', $rtn);
 
-      //@todo posh-git tries to use describe or tag if sym ref failed.
-      //if these fail then it tries to parse the contents of HEAD
-      //if this fails it tries rev-parse HEAD
+      if(!$b) {
+        if(file_exists("$dir/HEAD")) {
+          $log->log('Reading from .git/HEAD');
+          $ref = file_get_contents("$dir/HEAD");
+        }
+        else {
+          $ref = Git::exec('rev-parse HEAD', $rtn);
+        }
+
+        if (preg_match('/ref: (?<ref>.+)/', $ref, $matches)) {
+          $b = $matches['ref'];
+        }
+        elseif ($ref && strlen($ref) >= 7) {
+          $b = substr($ref, 0, 7) . '...';
+        }
+        else {
+          $b = 'unknown';
+        }
+      }
     }
 
     $log->log('Inside git directory?');

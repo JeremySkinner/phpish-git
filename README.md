@@ -111,9 +111,7 @@ $ "
 export GIT_PROMPT_DefaultPromptPrefix="\[\033]0;\w\007\]\n{Cyan}\u{Reset} at {Yellow}\h {Reset}in {Green}\W{Reset}"
 ```
 
-The complete list of environment variables is displayed below:
-
-TODO
+The complete list of environment variables [can be found here](https://github.com/JeremySkinner/phpish-git/wiki/Environment-Variables)
 
 # Complete list of colour codes:
 

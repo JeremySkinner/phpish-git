@@ -6,44 +6,44 @@ class GitSettings {
     public $enableFileStatus = true;
 
     public $defaultColor = '';
-    public $branchColor = 'Cyan';
-    public $indexColor = 'Green';
-    public $workingColor = 'Red';
+    public $branchColor = 'DarkCyan';
+    public $indexColor = 'DarkGreen';
+    public $workingColor = 'DarkRed';
     public $stashColor = 'DarkRed';
     public $errorColor = 'DarkRed';
 
     public $pathStatusSeparator = ' ';
     public $beforeStatus = '[';
-    public $beforeStatusColor = '';
+    public $beforeStatusColor = 'DarkYellow';
     public $delimStatus = ' |';
-    public $delimStatusColor = 'Yellow';
+    public $delimStatusColor = 'DarkYellow';
     public $afterStatus = ']';
-    public $afterStatusColor = '';
+    public $afterStatusColor = 'DarkYellow';
 
     public $beforeIndex      = '';
-    public $beforeIndexColor = 'Green';
+    public $beforeIndexColor = 'DarkGreen';
     public $beforeStash      = ' (';
     public $beforeStashColor = 'DarkRed';
     public $afterStash       = ')';
     public $afterStashColor  = 'DarkRed';
 
     public $localDefaultStatusSymbol = '';
-    public $localDefaultStatusColor = 'Green';
+    public $localDefaultStatusColor = 'DarkGreen';
     public $localWorkingStatusSymbol = '!';
-    public $localWorkingStatusColor = 'Red';
+    public $localWorkingStatusColor = 'DarkRed';
     public $localStagedStatusSymbol  = '~';
-    public $localStagedStatusColor = 'Cyan';
+    public $localStagedStatusColor = 'DarkCyan';
 
     public $branchGoneStatusSymbol           = "\u{00D7}"; # × Multiplication sign
     public $branchIdenticalStatusSymbol      = "\u{2261}"; # ≡ Three horizontal lines
     public $branchAheadStatusSymbol          = "\u{2191}"; # ↑ Up arrow
     public $branchBehindStatusSymbol         = "\u{2193}"; # ↓ Down arrow
     public $branchBehindAndAheadStatusSymbol = "\u{2195}"; # ↕ Up & Down arrow
-    public $branchGoneColor                  = 'Cyan';
-    public $branchIdenticalColor             = 'Cyan';
-    public $branchAheadColor                 = 'Green';
-    public $branchBehindColor                = 'Red';
-    public $branchBehindAndAheadColor        = 'Yellow';
+    public $branchGoneColor                  = 'DarkCyan';
+    public $branchIdenticalColor             = 'DarkCyan';
+    public $branchAheadColor                 = 'DarkGreen';
+    public $branchBehindColor                = 'DarkRed';
+    public $branchBehindAndAheadColor        = 'DarkYellow';
 
     public $branchBehindAndAheadDisplay = 'Full'; //Full, Compact, Minimal
 
@@ -67,7 +67,7 @@ class GitSettings {
 
 // "\[\033]0;\w\007\]\n${CYAN}\u ${D}at ${ORANGE}\h ${D}in ${GREEN}\w ${D}"
 
-    public $defaultPromptPrefix       = '\[\033]0;\w\007\][{Cyan}\u{Reset}@{Yellow}\h {Green}\W{Reset}]';
+    public $defaultPromptPrefix       = '\[\033]0;\w\007\]{Green}\u@\h:{Blue}\w{Reset}';
     public $defaultPromptPath         = ''; //'$(Get-PromptPath)'
     public $defaultPromptBeforeSuffix = '';
 //    public $defaultPromptDebug        = ' [DBG]:';

@@ -2,14 +2,34 @@
 
 class Git {
   public static function directory() {
-    $rtn=0;
-    $dir = Git::exec('rev-parse --git-dir', $rtn);
-
-    if ($rtn !== 0) {
-      return null;
+    if(file_exists('.git')) {
+      return getcwd() . "/.git";
     }
 
-    return $dir;
+    // Recurse up directory tree
+    $path = getcwd();
+
+    do {
+      $path = dirname($path);
+      $dir = $path . '/.git';
+      if (file_exists($dir)) {
+        return $dir;
+      }
+
+    } while ($path != "/" && strpos($path, ":\\") === FALSE); // the :\ check is for windows
+
+    return null;
+
+    // git rev-parse is more reliable than the loop above, but much slower.
+
+    // $rtn=0;
+    // $dir = Git::exec('rev-parse --git-dir', $rtn);
+
+    // if ($rtn !== 0) {
+    //   return null;
+    // }
+
+    // return $dir;
   }
 
   public static function branch($dir = null, $log = null) {
@@ -60,9 +80,12 @@ class Git {
         $r = '|BISECTING';
       }
 
-      $log->log('Trying symbolic ref');
+      // Symbolic ref check is pretty slow so remove this for now.
+      // $log->log('Trying symbolic ref');
 
-      $b = Git::exec('symbolic-ref HEAD -q', $rtn);
+    //  $b = Git::exec('symbolic-ref HEAD -q', $rtn);
+
+      // $log->log('Finished symbolic-ref');
 
       if(!$b) {
         if(file_exists("$dir/HEAD")) {
@@ -85,17 +108,18 @@ class Git {
       }
     }
 
-    $log->log('Inside git directory?');
+    // Remove this for now for performance.
+    // $log->log('Inside git directory?');
 
-    if ('true' == Git::exec('rev-parse --is-inside-git-dir', $rtn)) {
-      $log->log('Inside git directory');
-      if ('true' == Git::exec('git rev-parse --is-bare-repository', $rtn)) {
-        $c = 'BARE:';
-      }
-      else {
-        $b = 'GIT_DIR!';
-      }
-    }
+    // if ('true' == Git::exec('rev-parse --is-inside-git-dir', $rtn)) {
+    //   $log->log('Inside git directory');
+    //   if ('true' == Git::exec('git rev-parse --is-bare-repository', $rtn)) {
+    //     $c = 'BARE:';
+    //   }
+    //   else {
+    //     $b = 'GIT_DIR!';
+    //   }
+    // }
 
     $b = str_replace('refs/heads/', '', $b);
     return "$c$b$r";
@@ -109,11 +133,14 @@ class Git {
   }
 
   public static function status(GitSettings $settings, $gitDir = null, $force = false, Logger $log = null) {
-    if (!$gitDir) $gitDir = Git::directory();
+    if (!$log) $log = new Logger($settings->debug);
 
+    $log->log('Running status');
+    
+    if (!$gitDir) $gitDir = Git::directory();
     $enabled = $force || $settings->enablePromptStatus;
 
-    if (!$log) $log = new Logger($settings->debug);
+    $log->log('Got git dir');
 
     if ($enabled && $gitDir) {
 
@@ -131,7 +158,7 @@ class Git {
       $filesDeleted = [];
       $filesUnmerged = [];
       $stashCount = 0;
-
+        
       if($settings->enableFileStatus && !Git::inDotGitOrBareRepoDir($gitDir)) {
         // @todo posh-git has a check for disabled repositories in here.
         $log->log('Getting status');
@@ -236,7 +263,18 @@ class Git {
   }
 
   public static function exec($args, &$rtn, $as_array=false) {
-    $command = 'git ' . $args;
+    $command = 'git ' . $args . ' 2>&1';
+
+    $result = exec($command, $out, $rtn);
+
+    if ($as_array) {
+      return array_filter($out);
+      //return array_filter(explode("\n", $result));
+    }
+    else {
+      return implode("\n", $out);
+    }
+
 
     $process = proc_open($command, [
       0 => ['pipe', 'r'],

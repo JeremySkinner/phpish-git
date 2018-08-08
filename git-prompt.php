@@ -5,6 +5,10 @@ require 'src/git.php';
 require 'src/prompt.php';
 require 'src/text-utils.php';
 
-$settings = GitSettings::create();
-$prompt = Prompt::create($settings);
+
+$log = new Logger(getenv("GIT_PROMPT_Debug") == 1);
+$log->log('Parsing settings');
+$settings = GitSettings::create($log);
+$log->log('Creating prompt'); 
+$prompt = Prompt::create($settings, $log);
 $prompt->writePrompt();

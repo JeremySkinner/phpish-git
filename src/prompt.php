@@ -10,8 +10,7 @@ class Prompt {
 
   private $log;
 
-  public static function create(GitSettings $settings) {
-    $log = new Logger($settings->debug);
+  public static function create(GitSettings $settings, Logger $log) {
     return new static($settings, Git::status($settings, null, false, $log), $log);
   }
 

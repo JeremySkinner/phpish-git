@@ -31,6 +31,18 @@ $ansi_background_colors = [
   '{Gray}' => '\[\033[47m\]',
 ];
 
+// Bash needs the escape characters in colour codes, but other shells (such as zsh) don't.
+if (getenv('GIT_PROMPT_ANSI_MODE') == 'NO_ESCAPE') {
+  foreach ($ansi_colors as $key => $value) {
+    // Strip off the first and last 2 chars.
+    $ansi_colors[$key] = substr($value, 2, -2);
+  }
+  foreach ($ansi_background_colors as $key => $value) {
+    // Strip off the first and last 2 chars.
+    $ansi_background_colors[$key] = substr($value, 2, -2);
+  }
+}
+
 /*
 $ansi_colors = [
   'Black' => 30,

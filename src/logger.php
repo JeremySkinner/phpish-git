@@ -1,6 +1,9 @@
 <?php
 class Logger {
 
+    private $enabled;
+    private $start;
+
     function __construct($enabled=true) {
         $this->enabled = $enabled;
         $this->start = microtime(true);

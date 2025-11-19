@@ -132,7 +132,7 @@ class Git {
     return false;
   }
 
-  public static function status(GitSettings $settings, $gitDir = null, $force = false, Logger $log = null) {
+  public static function status(GitSettings $settings, $gitDir = null, $force = false, ?Logger $log = null) {
     if (!$log) $log = new Logger($settings->debug);
 
     $log->log('Running status');
